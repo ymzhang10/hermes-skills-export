@@ -1,0 +1,56 @@
+name: Skill CI
+
+on:
+  push:
+    paths:
+      - 'skills/**'
+      - '.github/workflows/**'
+
+jobs:
+  skill-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check SKILL.md frontmatter and references
+        run: |
+          python3 - <<'PY'
+import os, sys, yaml
+errors = []
+root = 'skills'
+if not os.path.isdir(root):
+    print('No skills dir, skipping')
+    sys.exit(0)
+for skill in os.listdir(root):
+    sdir = os.path.join(root, skill)
+    if not os.path.isdir(sdir):
+        continue
+    smd = os.path.join(sdir, 'SKILL.md')
+    if not os.path.isfile(smd):
+        errors.append(f"{skill}: SKILL.md missing")
+        continue
+    with open(smd, 'r', encoding='utf-8') as f:
+        txt = f.read()
+    if not txt.strip().startswith('---'):
+        errors.append(f"{skill}: SKILL.md missing YAML frontmatter")
+        continue
+    try:
+        parts = txt.split('---')
+        if len(parts) < 3:
+            raise ValueError('no frontmatter parts')
+        meta = yaml.safe_load(parts[1])
+        if not meta or 'name' not in meta:
+            errors.append(f"{skill}: frontmatter missing 'name' field")
+    except Exception as e:
+        errors.append(f"{skill}: frontmatter parse error: {e}")
+    refdir = os.path.join(sdir, 'references')
+    if os.path.isdir(refdir):
+        for rootdir, _, files in os.walk(refdir):
+            for fn in files:
+                if not os.path.getsize(os.path.join(rootdir, fn)):
+                    errors.append(f"{skill}: reference file empty {fn}")
+if errors:
+    print('\n'.join(errors))
+    sys.exit(1)
+print('Skill checks passed')
+PY
+
