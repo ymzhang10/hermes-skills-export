@@ -23,3 +23,13 @@ Purpose: keep a portable snapshot of these skills for versioning and sharing.
 README updated on: $(date -u +"%Y-%m-%dT%H:%M:%SZ") (UTC)
 
 Contact: ymzhang10
+
+## Skills / 
+
+### xianyu-price-research
+
+English:
+- Description: Scrapes real Xianyu () search results using a local Chrome login session, exports CSV/HTML, filters invalid samples, and produces pricing suggestions based on real marketplace samples. Useful for second-hand hardware, computer parts, mini PCs, SSDs, and memory pricing reviews and weekly retrospectives.
+- Typical usage scenarios: weekly price review, determine listing price / quick-sell price / probe price for a given model, validate price bands across multiple keywords. Outputs: CSV/HTML in runtime/ and reports in reports/.
+
+
