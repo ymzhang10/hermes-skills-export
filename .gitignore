@@ -1,0 +1,9 @@
+# ignore logs, caches, large files
+logs/
+*.log
+.cache/
+.cache/**
+*.pyc
+__pycache__/
+.DS_Store
+node_modules/
